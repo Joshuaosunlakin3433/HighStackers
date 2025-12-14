@@ -8,7 +8,7 @@
 
 Built for the Stacks Blockchain Hackathon - A fully functional PvP betting game with instant resolution and the unique "Restack Rebate" mechanic that ensures losers always get something back.
 
-**🎮 [Play Now](https://highstackers.vercel.app)** | **📜 [Contract on Explorer](https://explorer.hiro.so/address/ST1XF7QZ52F6WYHKP9NKR869NNN3ZEY6SXHQ9E497?chain=testnet)**
+**🎮 [Play Now](https://high-stackers-asm5.vercel.app/)** | **📜 [Contract on Explorer](https://explorer.hiro.so/address/ST1XF7QZ52F6WYHKP9NKR869NNN3ZEY6SXHQ9E497?chain=testnet)**
 
 ---
 
