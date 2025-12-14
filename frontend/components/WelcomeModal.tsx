@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Zap } from "lucide-react";
+import { X } from "lucide-react";
+import Image from "next/image";
 
 export default function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(() => {
@@ -32,8 +33,14 @@ export default function WelcomeModal() {
 
         {/* Logo */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#7F73FF] to-[#F7931A] flex items-center justify-center">
-            <Zap className="w-7 h-7 text-black" />
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#7F73FF] to-[#F7931A] flex items-center justify-center p-1.5">
+            <Image
+              src="/icon.svg"
+              alt="HighStackers Logo"
+              width={48}
+              height={48}
+              className="w-full h-full"
+            />
           </div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-[#7F73FF] to-white bg-clip-text text-transparent">
             Welcome to HighStackers

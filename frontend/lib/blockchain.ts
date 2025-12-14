@@ -262,8 +262,8 @@ export async function getRecentGames(): Promise<
       amount: number;
     }> = [];
 
-    // Only query last 5 lobbies to avoid CORS issues
-    const startId = Math.max(1, counter - 4);
+    // Check last 15 lobbies to find recent completed games
+    const startId = Math.max(1, counter - 14);
 
     for (let i = counter; i >= startId; i--) {
       try {
@@ -280,8 +280,8 @@ export async function getRecentGames(): Promise<
           if (recentGames.length >= 10) break; // Limit to 10 recent
         }
 
-        // Delay between requests
-        await new Promise((resolve) => setTimeout(resolve, 200));
+        // Delay between requests to avoid rate limits
+        await new Promise((resolve) => setTimeout(resolve, 150));
       } catch (error) {
         console.warn(`Failed to fetch game ${i}, skipping`);
         continue;

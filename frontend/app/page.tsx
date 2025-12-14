@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import GameScene from "@/components/GameScene";
 import WalletConnect from "@/components/WalletConnect";
 import WelcomeModal from "@/components/WelcomeModal";
 import SoundManager from "@/components/SoundManager";
 import MultiplierOverlay from "@/components/MultiplierOverlay";
 import GameResultModal from "@/components/GameResultModal";
-import { Zap, TrendingUp, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import { TrendingUp, ExternalLink, Volume2, VolumeX } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import {
   isConnected as checkWalletConnection,
@@ -51,6 +52,44 @@ export default function Home() {
     amount: number;
   } | null>(null);
 
+  // Fetch real lobbies and games from blockchain
+  const [lobbies, setLobbies] = useState<Lobby[]>([]);
+  const [isLoadingLobbies, setIsLoadingLobbies] = useState(false);
+  const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
+
+  const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
+  const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
+
+  const loadingQuotes = [
+    "Scanning the blockchain for worthy opponents...",
+    "Calculating your winning odds... Looking good!",
+    "Shuffling the virtual deck...",
+    "Connecting to the Stacks network...",
+    "Loading high-stakes battles...",
+    "Warming up the randomness engine...",
+    "Checking for active Stackers...",
+    "Remember: Losers get 8% back with Restack Rebate!",
+    "Pro tip: Create a lobby and let others join you!",
+    "The house barely wins... (only 2% platform fee)!",
+  ];
+
+  const [loadingQuote, setLoadingQuote] = useState(
+    loadingQuotes[Math.floor(Math.random() * loadingQuotes.length)]
+  );
+
+  // Rotate loading quote every 3 seconds while loading
+  useEffect(() => {
+    if (isLoadingLobbies) {
+      const interval = setInterval(() => {
+        setLoadingQuote(
+          loadingQuotes[Math.floor(Math.random() * loadingQuotes.length)]
+        );
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoadingLobbies]);
+
   // Check wallet connection status and listen for changes
   useEffect(() => {
     const checkConnection = async () => {
@@ -61,6 +100,8 @@ export default function Home() {
         // Check for recent game results when wallet connects
         if (connected) {
           await checkForRecentGameResult();
+          // Also refresh lobbies when wallet connects
+          refreshBlockchainData();
         }
       }
     };
@@ -87,20 +128,23 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch real lobbies and games from blockchain
-  const [lobbies, setLobbies] = useState<Lobby[]>([]);
-  const [isLoadingLobbies, setIsLoadingLobbies] = useState(false);
-
-  const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
-  const [isLoadingGames, setIsLoadingGames] = useState(false);
-
   // Fetch blockchain data on mount and periodically
-  const refreshBlockchainData = async () => {
-    console.log("🔄 Starting blockchain data refresh...");
-    try {
+  const refreshBlockchainData = async (isBackground = false) => {
+    console.log(
+      `🔄 Starting ${
+        isBackground ? "background" : "initial"
+      } blockchain data refresh...`
+    );
+
+    // For background refreshes, don't show loading state (keep existing data visible)
+    if (isBackground) {
+      setIsBackgroundRefresh(true);
+    } else {
       setIsLoadingLobbies(true);
       setIsLoadingGames(true);
+    }
 
+    try {
       // Fetch open lobbies
       const openLobbies = await getOpenLobbies();
       console.log("📦 Fetched lobbies:", openLobbies.length);
@@ -108,36 +152,50 @@ export default function Home() {
       const formattedLobbies = openLobbies.map((lobby) => ({
         id: lobby.id,
         maker: `${lobby.maker.slice(0, 6)}...${lobby.maker.slice(-3)}`,
+        makerAddress: lobby.maker, // Full address for validation
         amount: lobby.amount,
         multiplier: lobby.targetMultiplier,
         status: "open" as const,
       }));
 
-      // Only update if we got results OR it's the first load (empty state)
-      if (formattedLobbies.length > 0 || lobbies.length === 0) {
+      // SMART UPDATE: Only update if we have data OR it's first load
+      // Never replace existing data with empty results during background refresh
+      if (formattedLobbies.length > 0) {
         console.log("✅ Updating lobbies:", formattedLobbies.length);
         setLobbies(formattedLobbies);
+      } else if (!isBackground && lobbies.length === 0) {
+        // Only show empty if it's initial load AND we have no existing data
+        console.log("📭 No lobbies found (initial load)");
+        setLobbies([]);
       } else {
-        console.log("⏭️ Preserving existing lobbies:", lobbies.length);
+        console.log("⏭️ Preserving existing lobbies (empty fetch result)");
       }
 
       // Fetch recent games
       const games = await getRecentGames();
       console.log("🎮 Fetched games:", games.length);
 
-      // Only update if we got results OR it's the first load (empty state)
-      if (games.length > 0 || recentGames.length === 0) {
+      // Same smart update logic for games
+      if (games.length > 0) {
         console.log("✅ Updating games:", games.length);
         setRecentGames(games);
+      } else if (!isBackground && recentGames.length === 0) {
+        // Only show empty if it's initial load AND we have no existing data
+        console.log("📭 No games found (initial load)");
+        setRecentGames([]);
       } else {
-        console.log("⏭️ Preserving existing games:", recentGames.length);
+        console.log("⏭️ Preserving existing games (empty fetch result)");
       }
+
+      // Update last refresh timestamp
+      setLastRefreshTime(new Date());
     } catch (error) {
       console.error("❌ Error fetching blockchain data:", error);
-      // Keep existing data on error
+      // Keep existing data on error - don't clear anything
     } finally {
       setIsLoadingLobbies(false);
       setIsLoadingGames(false);
+      setIsBackgroundRefresh(false);
     }
   };
 
@@ -210,11 +268,12 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Initial fetch with slight delay to avoid setState in effect
-    const timer = setTimeout(() => refreshBlockchainData(), 100);
+    // Initial fetch (not background)
+    const timer = setTimeout(() => refreshBlockchainData(false), 100);
 
-    // Refresh every 45 seconds (reduced frequency to avoid rate limits)
-    const interval = setInterval(refreshBlockchainData, 45000);
+    // Background refresh every 30 seconds (silent, keeps existing data visible)
+    const interval = setInterval(() => refreshBlockchainData(true), 30000);
+
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
@@ -273,6 +332,13 @@ export default function Home() {
         // Reset game state immediately
         setGameState("idle");
 
+        // Immediate optimistic refresh
+        setTimeout(() => refreshBlockchainData(false), 2000);
+        // Follow-up check in case blockchain needs more time
+        setTimeout(() => refreshBlockchainData(true), 6000);
+        // Final check to catch any late updates
+        setTimeout(() => refreshBlockchainData(true), 12000);
+
         if (response && (response as any).txId) {
           const txId = (response as any).txId.startsWith("0x")
             ? (response as any).txId
@@ -280,20 +346,28 @@ export default function Home() {
           const explorerUrl = `https://explorer.hiro.so/txid/${txId}?chain=testnet`;
 
           toast.success(
-            <div>
-              <div>Lobby created!</div>
-              <a
-                href={explorerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 underline text-sm"
-              >
-                View TX: {txId.slice(0, 8)}...{txId.slice(-4)}
-              </a>
+            <div
+              onClick={() => window.open(explorerUrl, "_blank")}
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <div className="font-bold text-base mb-1">🎮 Lobby Created!</div>
+              <div className="text-zinc-400 text-sm mb-2">
+                Waiting for a challenger to join...
+              </div>
+              <div className="flex items-center gap-2 text-[#7F73FF] text-xs font-mono bg-zinc-900/50 px-3 py-1.5 rounded-lg mb-2">
+                <span>📋</span>
+                <span>
+                  {txId.slice(0, 10)}...{txId.slice(-8)}
+                </span>
+                <span className="ml-auto text-zinc-500">Click to view →</span>
+              </div>
+              <div className="text-zinc-600 text-xs italic">
+                🕒 Explorer may take 5-10s to index transaction
+              </div>
             </div>,
             {
               id: "create-lobby",
-              duration: 8000,
+              duration: 15000,
             }
           );
 
@@ -339,7 +413,11 @@ export default function Home() {
     }
   };
 
-  const handleJoinLobby = async (lobbyId: number, lobbyAmount: number) => {
+  const handleJoinLobby = async (
+    lobbyId: number,
+    lobbyAmount: number,
+    lobbyMakerAddress: string
+  ) => {
     if (!isConnected) {
       toast.error("Please connect your wallet first!");
       return;
@@ -361,6 +439,15 @@ export default function Home() {
         return;
       }
 
+      // Prevent joining own lobby
+      if (userAddress.toLowerCase() === lobbyMakerAddress.toLowerCase()) {
+        toast.error("You can't join your own lobby! Wait for another player.", {
+          duration: 4000,
+          icon: "🚫",
+        });
+        return;
+      }
+
       // Set pot amount for multiplier overlay
       setCurrentPot(lobbyAmount * 2);
       setGameState("action");
@@ -368,6 +455,12 @@ export default function Home() {
       toast.loading("Joining lobby...", { id: "join-lobby" });
 
       const response = await joinLobby(lobbyId, lobbyAmount, userAddress);
+
+      // Immediate refresh to remove joined lobby
+      setTimeout(() => refreshBlockchainData(false), 2000);
+      // Follow-up checks for game result
+      setTimeout(() => refreshBlockchainData(true), 6000);
+      setTimeout(() => refreshBlockchainData(true), 12000);
 
       // Start multiplier animation immediately
       setGameState("action");
@@ -379,26 +472,37 @@ export default function Home() {
         const explorerUrl = `https://explorer.hiro.so/txid/${txId}?chain=testnet`;
 
         toast.success(
-          <div>
-            <div>Game started! Rolling multiplier...</div>
-            <a
-              href={explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline text-sm"
-            >
-              View TX: {txId.slice(0, 8)}...{txId.slice(-4)}
-            </a>
+          <div
+            onClick={() => window.open(explorerUrl, "_blank")}
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <div className="font-bold text-base mb-1">⚡ Game Started!</div>
+            <div className="text-zinc-400 text-sm mb-2">
+              Rolling multiplier... Good luck Stacker!
+            </div>
+            <div className="flex items-center gap-2 text-[#F7931A] text-xs font-mono bg-zinc-900/50 px-3 py-1.5 rounded-lg mb-2">
+              <span>📋</span>
+              <span>
+                {txId.slice(0, 10)}...{txId.slice(-8)}
+              </span>
+              <span className="ml-auto text-zinc-500">Click to view →</span>
+            </div>
+            <div className="text-zinc-600 text-xs italic">
+              🕒 Explorer may take 5-10s to index transaction
+            </div>
           </div>,
           {
             id: "join-lobby",
-            duration: 8000,
+            duration: 15000,
           }
         );
 
-        // Wait 8 seconds for transaction to confirm, then fetch game result
-        setTimeout(async () => {
+        // Wait for transaction to confirm, then fetch game result with retries
+        const checkGameResult = async (attempt = 1, maxAttempts = 6) => {
           try {
+            console.log(
+              `🔍 Checking game result (attempt ${attempt}/${maxAttempts})...`
+            );
             const resolvedLobby = await getLobby(lobbyId);
             console.log("Game resolved:", {
               winner: resolvedLobby?.winner,
@@ -420,25 +524,56 @@ export default function Home() {
               if (didUserWin) {
                 setGameResult({ didWin: true, amount: winnerAmount });
                 setShowResultModal(true);
+                // Immediate aggressive refresh after win
+                setTimeout(() => refreshBlockchainData(false), 1000);
+                setTimeout(() => refreshBlockchainData(false), 3000);
+                setTimeout(() => refreshBlockchainData(true), 6000);
               } else {
                 const rebateAmount = lobbyAmount * 2 * 0.08; // 8% restack rebate
                 setGameResult({ didWin: false, amount: rebateAmount });
                 setShowResultModal(true);
+                // Immediate aggressive refresh after loss
+                setTimeout(() => refreshBlockchainData(false), 1000);
+                setTimeout(() => refreshBlockchainData(false), 3000);
+                setTimeout(() => refreshBlockchainData(true), 6000);
               }
+            } else if (attempt < maxAttempts) {
+              // Retry after delay - only show toast after 2nd attempt
+              if (attempt >= 2) {
+                console.log("⏳ Winner not determined yet, retrying...");
+                toast("Resolving game result...", {
+                  duration: 4000,
+                  icon: "⏳",
+                });
+              }
+              setTimeout(() => checkGameResult(attempt + 1, maxAttempts), 5000);
             } else {
-              setGameState("idle");
-              toast("Game resolving on blockchain...", {
-                duration: 5000,
-                icon: "⏳",
-              });
+              // Max attempts reached - don't give up, keep checking
+              console.log("⏱️ Still waiting, continuing checks...");
+              toast(
+                "Blockchain sync taking longer than usual, still checking...",
+                {
+                  duration: 6000,
+                  icon: "⏱️",
+                }
+              );
+              // Continue checking every 10 seconds
+              setTimeout(() => checkGameResult(1, 3), 10000);
             }
 
             refreshBlockchainData();
           } catch (error) {
             console.error("❌ Error fetching game result:", error);
-            setGameState("idle");
+            if (attempt < maxAttempts) {
+              setTimeout(() => checkGameResult(attempt + 1, maxAttempts), 5000);
+            } else {
+              setGameState("idle");
+            }
           }
-        }, 8000);
+        };
+
+        // Start checking after 8 seconds
+        setTimeout(() => checkGameResult(), 8000);
       } else {
         setGameState("idle");
         toast.success("Join transaction submitted!", {
@@ -467,22 +602,39 @@ export default function Home() {
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Toast Notifications */}
       <Toaster
-        position="top-center"
+        position="bottom-right"
         toastOptions={{
           style: {
-            background: "#18181b",
+            background: "linear-gradient(135deg, #18181b 0%, #27272a 100%)",
             color: "#fff",
-            border: "1px solid #27272a",
+            border: "1px solid #7F73FF",
+            padding: "16px 20px",
+            borderRadius: "12px",
+            fontSize: "14px",
+            boxShadow: "0 8px 32px rgba(127, 115, 255, 0.2)",
+            minWidth: "320px",
           },
           success: {
             iconTheme: {
-              primary: "#10b981",
+              primary: "#7F73FF",
               secondary: "#fff",
+            },
+            style: {
+              border: "1px solid #7F73FF",
             },
           },
           error: {
             iconTheme: {
               primary: "#ef4444",
+              secondary: "#fff",
+            },
+            style: {
+              border: "1px solid #ef4444",
+            },
+          },
+          loading: {
+            iconTheme: {
+              primary: "#F7931A",
               secondary: "#fff",
             },
           },
@@ -546,9 +698,13 @@ export default function Home() {
         {/* Header */}
         <header className="flex items-center justify-between px-4 md:px-8 py-4 md:py-6 border-b border-zinc-800/50 backdrop-blur-sm bg-black/30">
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-[#7F73FF] to-[#F7931A] flex items-center justify-center">
-              <Zap className="w-5 h-5 md:w-6 md:h-6 text-black" />
-            </div>
+            <Image
+              src="/icon.svg"
+              alt="HighStackers Logo"
+              width={40}
+              height={40}
+              className="w-8 h-8 md:w-10 md:h-10"
+            />
             <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-[#7F73FF] to-white bg-clip-text text-transparent">
               HighStackers
             </h1>
@@ -578,6 +734,11 @@ export default function Home() {
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="w-5 h-5 text-[#7F73FF]" />
                 <h2 className="text-xl font-bold text-white">Live Comms</h2>
+                {isBackgroundRefresh && (
+                  <div className="ml-auto">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#7F73FF]/50"></div>
+                  </div>
+                )}
               </div>
               <p className="text-zinc-400 text-xs mb-3">
                 👇 Click any lobby below to join and challenge!
@@ -589,8 +750,13 @@ export default function Home() {
               >
                 {isLoadingLobbies && lobbies.length === 0 ? (
                   <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7F73FF] mx-auto mb-2"></div>
-                    <p className="text-zinc-500 text-sm">Loading lobbies...</p>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7F73FF] mx-auto mb-3"></div>
+                    <p className="text-zinc-400 text-sm mb-1 font-medium">
+                      Loading lobbies...
+                    </p>
+                    <p className="text-zinc-600 text-xs italic animate-pulse">
+                      {loadingQuote}
+                    </p>
                   </div>
                 ) : lobbies.length === 0 ? (
                   <div className="text-center py-8">
@@ -606,7 +772,13 @@ export default function Home() {
                     <div
                       key={lobby.id}
                       className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#7F73FF]/70 hover:bg-zinc-900/80 transition-all cursor-pointer group"
-                      onClick={() => handleJoinLobby(lobby.id, lobby.amount)}
+                      onClick={() =>
+                        handleJoinLobby(
+                          lobby.id,
+                          lobby.amount,
+                          lobby.makerAddress
+                        )
+                      }
                     >
                       <div className="flex justify-between items-start mb-2">
                         <span className="text-[#7F73FF] font-mono text-xs group-hover:text-white transition-colors">
@@ -719,7 +891,7 @@ export default function Home() {
                       sBTC Support
                     </span>
                     <span className="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      USDC Support
+                      USDCx Support
                     </span>
                   </div>
                 </div>
@@ -780,10 +952,16 @@ export default function Home() {
           onClose={() => {
             setShowResultModal(false);
             setGameResult(null);
+            // Final refresh when modal closes
+            setTimeout(() => refreshBlockchainData(false), 500);
+            setTimeout(() => refreshBlockchainData(true), 2000);
           }}
           onPlayAgain={() => {
             setShowResultModal(false);
             setGameResult(null);
+            // Final refresh when playing again
+            setTimeout(() => refreshBlockchainData(false), 500);
+            setTimeout(() => refreshBlockchainData(true), 2000);
             // Scroll to create lobby section
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
