@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     // Ignore test files in node_modules
     config.module.rules.push({
       test: /node_modules.*\.(test|spec)\.(js|mjs|ts|tsx)$/,
-      loader: 'ignore-loader'
+      loader: "ignore-loader",
     });
 
     return config;
