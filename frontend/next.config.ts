@@ -1,18 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Exclude test files from build
   webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Exclude test files and dev dependencies from client bundle
-      config.module.rules.push({
-        test: /\.(test|spec)\.(js|jsx|ts|tsx|mjs)$/,
-        loader: 'ignore-loader',
-      });
-    }
+    // Ignore test files in node_modules
+    config.module.rules.push({
+      test: /node_modules.*\.(test|spec)\.(js|mjs|ts|tsx)$/,
+      loader: 'ignore-loader'
+    });
+
     return config;
   },
-  
+
   async headers() {
     return [
       {

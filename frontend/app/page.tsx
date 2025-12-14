@@ -169,7 +169,7 @@ export default function Home() {
         // Check if user was in this game (as maker or taker)
         const wasParticipant =
           lobby.maker.toLowerCase() === userAddress.toLowerCase() ||
-          lobby.taker.toLowerCase() === userAddress.toLowerCase();
+          (lobby.taker?.toLowerCase() || "") === userAddress.toLowerCase();
 
         console.log(`Lobby ${i} - Was participant:`, wasParticipant, {
           maker: lobby.maker,
@@ -273,10 +273,10 @@ export default function Home() {
         // Reset game state immediately
         setGameState("idle");
 
-        if (response && response.txId) {
-          const txId = response.txId.startsWith("0x")
-            ? response.txId
-            : `0x${response.txId}`;
+        if (response && (response as any).txId) {
+          const txId = (response as any).txId.startsWith("0x")
+            ? (response as any).txId
+            : `0x${(response as any).txId}`;
           const explorerUrl = `https://explorer.hiro.so/txid/${txId}?chain=testnet`;
 
           toast.success(
@@ -372,10 +372,10 @@ export default function Home() {
       // Start multiplier animation immediately
       setGameState("action");
 
-      if (response && response.txId) {
-        const txId = response.txId.startsWith("0x")
-          ? response.txId
-          : `0x${response.txId}`;
+      if (response && (response as any).txId) {
+        const txId = (response as any).txId.startsWith("0x")
+          ? (response as any).txId
+          : `0x${(response as any).txId}`;
         const explorerUrl = `https://explorer.hiro.so/txid/${txId}?chain=testnet`;
 
         toast.success(
