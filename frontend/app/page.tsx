@@ -708,7 +708,9 @@ export default function Home() {
 
                 {/* Coming Soon Features */}
                 <div className="p-3 rounded-xl bg-gradient-to-r from-zinc-900/50 to-zinc-800/50 border border-zinc-700/50">
-                  <p className="text-zinc-500 text-xs font-semibold mb-2 uppercase tracking-wider">Coming Soon</p>
+                  <p className="text-zinc-500 text-xs font-semibold mb-2 uppercase tracking-wider">
+                    Coming Soon
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 text-xs rounded-full bg-[#7F73FF]/10 text-[#7F73FF] border border-[#7F73FF]/20">
                       Custom Multipliers
@@ -724,7 +726,9 @@ export default function Home() {
 
                 {/* Payout Preview */}
                 <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                  <p className="text-zinc-400 text-xs mb-2">Potential Payout (2x Multiplier)</p>
+                  <p className="text-zinc-400 text-xs mb-2">
+                    Potential Payout (2x Multiplier)
+                  </p>
                   <div className="space-y-1">
                     <div className="flex justify-between text-sm">
                       <span className="text-zinc-500">Winner (90%)</span>
