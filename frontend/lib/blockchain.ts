@@ -72,7 +72,12 @@ export async function joinLobby(
 ) {
   const amountInMicroStx = amount * 1_000_000; // Convert STX to microSTX
 
-  console.log("Opening join lobby contract call...");
+  console.log("Opening join lobby contract call...", {
+    lobbyId,
+    amount,
+    amountInMicroStx,
+    senderAddress,
+  });
 
   return new Promise((resolve, reject) => {
     openContractCall({
@@ -80,8 +85,11 @@ export async function joinLobby(
       contractName: CONTRACT_NAME,
       functionName: "join-lobby",
       functionArgs: [Cl.uint(lobbyId)],
-      postConditions: [],
-      postConditionMode: 0x01, // Allow mode - contract does stx-transfer
+      postConditions: [
+        // Taker sends their bet to the contract
+        Pc.principal(senderAddress).willSendEq(amountInMicroStx).ustx(),
+      ],
+      postConditionMode: 0x01, // Allow mode - contract will send STX to winner/loser
       network: NETWORK,
       onFinish: (data) => {
         console.log("✅ Join transaction broadcast:", data);
