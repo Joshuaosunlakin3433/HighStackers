@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Black background -->
+  <rect width="32" height="32" fill="#000000"/>
+  
+  <!-- Stacked chips -->
+  <!-- Bottom chip - Purple -->
+  <ellipse cx="16" cy="21" rx="8" ry="2.5" fill="#7F73FF"/>
+  <ellipse cx="16" cy="21" rx="7" ry="2" fill="#9F93FF" opacity="0.6"/>
+  
+  <!-- Middle chip - Orange -->
+  <ellipse cx="16" cy="17" rx="8" ry="2.5" fill="#F7931A"/>
+  <ellipse cx="16" cy="17" rx="7" ry="2" fill="#FFA640" opacity="0.6"/>
+  
+  <!-- Top chip - Purple -->
+  <ellipse cx="16" cy="13" rx="8" ry="2.5" fill="#7F73FF"/>
+  <ellipse cx="16" cy="13" rx="7" ry="2" fill="#9F93FF" opacity="0.6"/>
+  
+  <!-- Glow -->
+  <ellipse cx="16" cy="13" rx="8.5" ry="3" fill="none" stroke="#7F73FF" stroke-width="0.5" opacity="0.4"/>
+</svg>

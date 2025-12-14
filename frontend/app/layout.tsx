@@ -16,7 +16,12 @@ export const metadata: Metadata = {
   title: "HighStackers - Stack Higher, Win Bigger",
   description:
     "The ultimate 50/50 coin flip game on Stacks. Winner gets 90%, Loser gets 8% back!",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#000000"/>
+  
+  <!-- Stacked chips (bottom to top) -->
+  <!-- Bottom chip - Purple -->
+  <ellipse cx="256" cy="320" rx="120" ry="35" fill="#7F73FF"/>
+  <ellipse cx="256" cy="320" rx="120" ry="35" fill="url(#grad1)" opacity="0.5"/>
+  <path d="M 136 320 Q 136 335 256 335 Q 376 335 376 320" fill="#5546DD"/>
+  
+  <!-- Middle chip - Orange -->
+  <ellipse cx="256" cy="260" rx="120" ry="35" fill="#F7931A"/>
+  <ellipse cx="256" cy="260" rx="120" ry="35" fill="url(#grad2)" opacity="0.5"/>
+  <path d="M 136 260 Q 136 275 256 275 Q 376 275 376 260" fill="#D77A0A"/>
+  
+  <!-- Top chip - Purple -->
+  <ellipse cx="256" cy="200" rx="120" ry="35" fill="#7F73FF"/>
+  <ellipse cx="256" cy="200" rx="120" ry="35" fill="url(#grad3)" opacity="0.5"/>
+  <path d="M 136 200 Q 136 215 256 215 Q 376 215 376 200" fill="#5546DD"/>
+  
+  <!-- Glow effect -->
+  <ellipse cx="256" cy="200" rx="130" ry="40" fill="none" stroke="#7F73FF" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="grad1">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#7F73FF;stop-opacity:0" />
+    </radialGradient>
+    <radialGradient id="grad2">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#F7931A;stop-opacity:0" />
+    </radialGradient>
+    <radialGradient id="grad3">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#7F73FF;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+</svg>
