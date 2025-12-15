@@ -172,9 +172,23 @@ export default function Home() {
         status: "open" as const,
       }));
 
-      // Always update data - keep it simple
-      setLobbies(formattedLobbies);
-      setRecentGames(games);
+      // Smart update: Only clear data if we have new data OR it's first load
+      if (formattedLobbies.length > 0) {
+        setLobbies(formattedLobbies);
+      } else if (!isBackground) {
+        // First load with no data - show empty
+        setLobbies([]);
+      }
+      // else: background refresh with empty result - keep existing data
+
+      if (games.length > 0) {
+        setRecentGames(games);
+      } else if (!isBackground) {
+        // First load with no data - show empty
+        setRecentGames([]);
+      }
+      // else: background refresh with empty result - keep existing data
+
       setLastRefreshTime(new Date());
     } catch (error) {
       console.error("❌ Error fetching blockchain data:", error);
