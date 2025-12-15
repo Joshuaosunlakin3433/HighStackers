@@ -139,10 +139,6 @@ export default function Home() {
 
   // Fetch blockchain data on mount and periodically
   const refreshBlockchainData = async (isBackground = false) => {
-    console.log(
-      `🔄 ${isBackground ? "Background" : "Initial"} refresh started...`
-    );
-
     // Show loading spinner for initial loads only
     if (!isBackground) {
       setIsLoadingLobbies(true);
@@ -158,10 +154,6 @@ export default function Home() {
         getRecentGames(),
       ]);
 
-      console.log(
-        `📦 Lobbies: ${openLobbies.length} | 🎮 Games: ${games.length}`
-      );
-
       // Format lobbies
       const formattedLobbies = openLobbies.map((lobby) => ({
         id: lobby.id,
@@ -172,22 +164,14 @@ export default function Home() {
         status: "open" as const,
       }));
 
-      // Smart update: Only clear data if we have new data OR it's first load
+      // ALWAYS preserve existing data if new fetch is empty
       if (formattedLobbies.length > 0) {
         setLobbies(formattedLobbies);
-      } else if (!isBackground) {
-        // First load with no data - show empty
-        setLobbies([]);
       }
-      // else: background refresh with empty result - keep existing data
 
       if (games.length > 0) {
         setRecentGames(games);
-      } else if (!isBackground) {
-        // First load with no data - show empty
-        setRecentGames([]);
       }
-      // else: background refresh with empty result - keep existing data
 
       setLastRefreshTime(new Date());
     } catch (error) {
