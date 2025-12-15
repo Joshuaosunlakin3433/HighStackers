@@ -158,7 +158,9 @@ export default function Home() {
         getRecentGames(),
       ]);
 
-      console.log(`📦 Lobbies: ${openLobbies.length} | 🎮 Games: ${games.length}`);
+      console.log(
+        `📦 Lobbies: ${openLobbies.length} | 🎮 Games: ${games.length}`
+      );
 
       // Format lobbies
       const formattedLobbies = openLobbies.map((lobby) => ({
