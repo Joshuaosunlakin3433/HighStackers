@@ -15,6 +15,7 @@ const NETWORK = STACKS_TESTNET;
 
 export interface Lobby {
   maker: string;
+  makerAddress?: string; // Full address for validation
   taker: string | null;
   amount: number;
   targetMultiplier: number;
