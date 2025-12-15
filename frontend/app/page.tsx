@@ -140,63 +140,39 @@ export default function Home() {
   // Fetch blockchain data on mount and periodically
   const refreshBlockchainData = async (isBackground = false) => {
     console.log(
-      `🔄 Starting ${
-        isBackground ? "background" : "initial"
-      } blockchain data refresh...`
+      `🔄 ${isBackground ? "Background" : "Initial"} refresh started...`
     );
 
-    // For background refreshes, don't show loading state (keep existing data visible)
-    if (isBackground) {
-      setIsBackgroundRefresh(true);
-    } else {
+    // Show loading spinner for initial loads only
+    if (!isBackground) {
       setIsLoadingLobbies(true);
       setIsLoadingGames(true);
+    } else {
+      setIsBackgroundRefresh(true);
     }
 
     try {
-      // Fetch open lobbies
-      const openLobbies = await getOpenLobbies();
-      console.log("📦 Fetched lobbies:", openLobbies.length);
+      // Fetch lobbies and games in parallel for faster load
+      const [openLobbies, games] = await Promise.all([
+        getOpenLobbies(),
+        getRecentGames(),
+      ]);
 
+      console.log(`📦 Lobbies: ${openLobbies.length} | 🎮 Games: ${games.length}`);
+
+      // Format lobbies
       const formattedLobbies = openLobbies.map((lobby) => ({
         id: lobby.id,
         maker: `${lobby.maker.slice(0, 6)}...${lobby.maker.slice(-3)}`,
-        makerAddress: lobby.maker, // Full address for validation
+        makerAddress: lobby.maker,
         amount: lobby.amount,
         multiplier: lobby.targetMultiplier,
         status: "open" as const,
       }));
 
-      // SMART UPDATE: Only update if we have data OR it's first load
-      // Never replace existing data with empty results during background refresh
-      if (formattedLobbies.length > 0) {
-        console.log("✅ Updating lobbies:", formattedLobbies.length);
-        setLobbies(formattedLobbies);
-      } else if (!isBackground && lobbies.length === 0) {
-        // Only show empty if it's initial load AND we have no existing data
-        console.log("📭 No lobbies found (initial load)");
-        setLobbies([]);
-      } else {
-        console.log("⏭️ Preserving existing lobbies (empty fetch result)");
-      }
-
-      // Fetch recent games
-      const games = await getRecentGames();
-      console.log("🎮 Fetched games:", games.length);
-
-      // Same smart update logic for games
-      if (games.length > 0) {
-        console.log("✅ Updating games:", games.length);
-        setRecentGames(games);
-      } else if (!isBackground && recentGames.length === 0) {
-        // Only show empty if it's initial load AND we have no existing data
-        console.log("📭 No games found (initial load)");
-        setRecentGames([]);
-      } else {
-        console.log("⏭️ Preserving existing games (empty fetch result)");
-      }
-
-      // Update last refresh timestamp
+      // Always update data - keep it simple
+      setLobbies(formattedLobbies);
+      setRecentGames(games);
       setLastRefreshTime(new Date());
     } catch (error) {
       console.error("❌ Error fetching blockchain data:", error);
@@ -277,14 +253,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Initial fetch (not background)
-    const timer = setTimeout(() => refreshBlockchainData(false), 100);
+    // Immediate fetch on mount
+    refreshBlockchainData(false);
 
-    // Background refresh every 30 seconds (silent, keeps existing data visible)
-    const interval = setInterval(() => refreshBlockchainData(true), 30000);
+    // Poll every 10 seconds for fresh data
+    const interval = setInterval(() => refreshBlockchainData(true), 10000);
 
     return () => {
-      clearTimeout(timer);
       clearInterval(interval);
     };
   }, []);
