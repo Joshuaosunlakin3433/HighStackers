@@ -53,7 +53,16 @@ export default function Home() {
   } | null>(null);
 
   // Fetch real lobbies and games from blockchain
-  const [lobbies, setLobbies] = useState<Lobby[]>([]);
+  type FormattedLobby = {
+    id: number;
+    maker: string;
+    makerAddress: string;
+    amount: number;
+    multiplier: number;
+    status: "open";
+  };
+
+  const [lobbies, setLobbies] = useState<FormattedLobby[]>([]);
   const [isLoadingLobbies, setIsLoadingLobbies] = useState(false);
   const [isBackgroundRefresh, setIsBackgroundRefresh] = useState(false);
 
