@@ -730,6 +730,13 @@ export default function Home() {
                 👇 Click any lobby below to join and challenge!
               </p>
 
+              {/* Info banner */}
+              <div className="mb-3 p-2 rounded-lg bg-[#7F73FF]/5 border border-[#7F73FF]/20">
+                <p className="text-[10px] text-zinc-500 text-center">
+                  ⏱️ Live blockchain data refreshes every 10s
+                </p>
+              </div>
+
               <div
                 className="space-y-3 overflow-y-auto"
                 style={{ maxHeight: "280px" }}
@@ -804,6 +811,14 @@ export default function Home() {
                 <span className="w-2 h-2 rounded-full bg-[#F7931A] animate-pulse"></span>
                 🔥 Recent Wins
               </h3>
+
+              {/* Info banner */}
+              <div className="mb-3 p-2 rounded-lg bg-[#F7931A]/5 border border-[#F7931A]/20">
+                <p className="text-[10px] text-zinc-500 text-center">
+                  ⏱️ Results appear here after games complete
+                </p>
+              </div>
+
               <div
                 className="space-y-2.5 overflow-y-auto"
                 style={{ maxHeight: "180px", minHeight: "100px" }}
