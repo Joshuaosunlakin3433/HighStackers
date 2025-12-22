@@ -717,7 +717,9 @@ export default function Home() {
             <div className="backdrop-blur-md bg-black/40 border border-[#7F73FF]/30 rounded-2xl p-3 sm:p-5 shadow-xl flex-shrink-0">
               <div className="flex items-center gap-2 mb-2 sm:mb-3">
                 <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#7F73FF]" />
-                <h2 className="text-lg sm:text-xl font-bold text-white">Live Comms</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">
+                  Live Comms
+                </h2>
                 {isBackgroundRefresh && (
                   <div className="ml-auto">
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#7F73FF]/50"></div>
@@ -809,11 +811,10 @@ export default function Home() {
                 <span className="w-2 h-2 rounded-full bg-[#F7931A] animate-pulse"></span>
                 🔥 Recent Wins
               </h3>
-              
+
               {/* Info banner */}
               <div className="mb-2 sm:mb-3 p-1.5 sm:p-2 rounded-lg bg-[#F7931A]/5 border border-[#F7931A]/20">
-                <p className="text-[9px] sm:text-[10px] text-zinc-500 text-center">
-                </p>
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 text-center"></p>
               </div>
 
               <div
