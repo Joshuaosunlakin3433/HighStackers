@@ -95,15 +95,15 @@ export default function WalletConnect() {
     const shortAddress = `${stxAddress.slice(0, 6)}...${stxAddress.slice(-4)}`;
 
     return (
-      <div className="flex items-center gap-3">
-        <div className="px-4 py-2 rounded-lg bg-[#7F73FF]/10 border border-[#7F73FF]/30">
-          <span className="text-[#7F73FF] font-mono text-sm">
+      <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-[#7F73FF]/10 border border-[#7F73FF]/30">
+          <span className="text-[#7F73FF] font-mono text-xs sm:text-sm">
             {shortAddress}
           </span>
         </div>
         <button
           onClick={disconnectWallet}
-          className="px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors text-zinc-400 text-sm"
+          className="px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors text-zinc-400 text-xs sm:text-sm"
         >
           Disconnect
         </button>
@@ -114,7 +114,7 @@ export default function WalletConnect() {
   return (
     <button
       onClick={connectWallet}
-      className="px-6 py-3 rounded-lg bg-[#7F73FF] hover:bg-[#6F63EF] transition-all duration-200 text-white font-semibold shadow-lg shadow-[#7F73FF]/20 hover:shadow-[#7F73FF]/40"
+      className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-[#7F73FF] hover:bg-[#6F63EF] transition-all duration-200 text-white font-semibold text-xs sm:text-base shadow-lg shadow-[#7F73FF]/20 hover:shadow-[#7F73FF]/40"
     >
       Connect Wallet
     </button>

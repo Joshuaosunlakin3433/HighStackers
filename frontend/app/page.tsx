@@ -680,30 +680,30 @@ export default function Home() {
         </div>
 
         {/* Header */}
-        <header className="flex items-center justify-between px-4 md:px-8 py-4 md:py-6 border-b border-zinc-800/50 backdrop-blur-sm bg-black/30">
-          <div className="flex items-center gap-2 md:gap-3">
+        <header className="flex items-center justify-between px-3 sm:px-4 md:px-8 py-3 sm:py-4 md:py-6 border-b border-zinc-800/50 backdrop-blur-sm bg-black/30">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
             <Image
               src="/icon.svg"
               alt="HighStackers Logo"
               width={40}
               height={40}
-              className="w-8 h-8 md:w-10 md:h-10"
+              className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"
             />
-            <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-[#7F73FF] to-white bg-clip-text text-transparent">
+            <h1 className="text-base sm:text-xl md:text-3xl font-bold bg-gradient-to-r from-[#7F73FF] to-white bg-clip-text text-transparent">
               HighStackers
             </h1>
           </div>
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4">
             {/* Mute/Unmute Button */}
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 rounded-lg border border-zinc-700 bg-black/60 hover:bg-zinc-900 hover:border-[#7F73FF]/50 transition-all duration-200"
+              className="p-1.5 sm:p-2 rounded-lg border border-zinc-700 bg-black/60 hover:bg-zinc-900 hover:border-[#7F73FF]/50 transition-all duration-200"
               title={isMuted ? "Unmute" : "Mute"}
             >
               {isMuted ? (
-                <VolumeX className="h-5 w-5 text-zinc-400" />
+                <VolumeX className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-400" />
               ) : (
-                <Volume2 className="h-5 w-5 text-[#7F73FF]" />
+                <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 text-[#7F73FF]" />
               )}
             </button>
             <WalletConnect />
@@ -711,26 +711,26 @@ export default function Home() {
         </header>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 md:p-6 overflow-y-auto">
+        <div className="flex-1 flex flex-col lg:flex-row gap-3 sm:gap-4 p-3 sm:p-4 md:p-6 overflow-y-auto">
           {/* Left Panel: Live Comms */}
-          <div className="w-full lg:w-80 flex flex-col gap-3 order-2 lg:order-1">
-            <div className="backdrop-blur-md bg-black/40 border border-[#7F73FF]/30 rounded-2xl p-5 shadow-xl flex-shrink-0">
-              <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="w-5 h-5 text-[#7F73FF]" />
-                <h2 className="text-xl font-bold text-white">Live Comms</h2>
+          <div className="w-full lg:w-80 flex flex-col gap-2 sm:gap-3 order-2 lg:order-1">
+            <div className="backdrop-blur-md bg-black/40 border border-[#7F73FF]/30 rounded-2xl p-3 sm:p-5 shadow-xl flex-shrink-0">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#7F73FF]" />
+                <h2 className="text-lg sm:text-xl font-bold text-white">Live Comms</h2>
                 {isBackgroundRefresh && (
                   <div className="ml-auto">
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#7F73FF]/50"></div>
                   </div>
                 )}
               </div>
-              <p className="text-zinc-400 text-xs mb-3">
+              <p className="text-zinc-400 text-[10px] sm:text-xs mb-2 sm:mb-3">
                 👇 Click any lobby below to join and challenge!
               </p>
 
               {/* Info banner */}
-              <div className="mb-3 p-2 rounded-lg bg-[#7F73FF]/5 border border-[#7F73FF]/20">
-                <p className="text-[10px] text-zinc-500 text-center">
+              <div className="mb-2 sm:mb-3 p-1.5 sm:p-2 rounded-lg bg-[#7F73FF]/5 border border-[#7F73FF]/20">
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 text-center">
                   ⏱️ Live blockchain data refreshes every 10s
                 </p>
               </div>
@@ -762,7 +762,7 @@ export default function Home() {
                   lobbies.map((lobby) => (
                     <div
                       key={lobby.id}
-                      className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#7F73FF]/70 hover:bg-zinc-900/80 transition-all cursor-pointer group"
+                      className="p-3 sm:p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-[#7F73FF]/70 hover:bg-zinc-900/80 transition-all cursor-pointer group"
                       onClick={() =>
                         handleJoinLobby(
                           lobby.id,
@@ -772,18 +772,18 @@ export default function Home() {
                       }
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-[#7F73FF] font-mono text-xs group-hover:text-white transition-colors">
+                        <span className="text-[#7F73FF] font-mono text-[10px] sm:text-xs group-hover:text-white transition-colors break-all">
                           {lobby.maker}
                         </span>
-                        <span className="px-2 py-1 rounded bg-[#7F73FF]/20 text-[#7F73FF] text-xs font-semibold">
+                        <span className="px-2 py-1 rounded bg-[#7F73FF]/20 text-[#7F73FF] text-[10px] sm:text-xs font-semibold flex-shrink-0 ml-2">
                           {lobby.multiplier}x
                         </span>
                       </div>
                       <div className="flex justify-between items-end">
-                        <span className="text-white font-bold text-lg">
+                        <span className="text-white font-bold text-base sm:text-lg">
                           {lobby.amount} STX
                         </span>
-                        <span className="text-zinc-500 text-xs group-hover:text-[#F7931A] transition-colors">
+                        <span className="text-zinc-500 text-[10px] sm:text-xs group-hover:text-[#F7931A] transition-colors whitespace-nowrap">
                           Click to join →
                         </span>
                       </div>
@@ -794,26 +794,25 @@ export default function Home() {
             </div>
 
             {/* Restack Rebate Info */}
-            <div className="backdrop-blur-md bg-gradient-to-br from-[#F7931A]/20 to-[#7F73FF]/20 border border-[#F7931A]/30 rounded-2xl p-3 flex-shrink-0">
-              <p className="text-[#F7931A] font-bold text-sm mb-1">
+            <div className="backdrop-blur-md bg-gradient-to-br from-[#F7931A]/20 to-[#7F73FF]/20 border border-[#F7931A]/30 rounded-2xl p-2.5 sm:p-3 flex-shrink-0">
+              <p className="text-[#F7931A] font-bold text-xs sm:text-sm mb-0.5 sm:mb-1">
                 ⚡ Restack Rebate Active
               </p>
-              <p className="text-white text-xs">
+              <p className="text-white text-[10px] sm:text-xs">
                 Losers get 8% back. Stack again!
               </p>
             </div>
 
             {/* Recent Wins Feed */}
-            <div className="backdrop-blur-md bg-black/60 border border-[#F7931A]/40 rounded-2xl p-4 flex flex-col flex-shrink-0">
-              <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <div className="backdrop-blur-md bg-black/60 border border-[#F7931A]/40 rounded-2xl p-3 sm:p-4 flex flex-col flex-shrink-0">
+              <h3 className="text-xs sm:text-sm font-bold text-white mb-2 sm:mb-3 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#F7931A] animate-pulse"></span>
                 🔥 Recent Wins
               </h3>
-
+              
               {/* Info banner */}
-              <div className="mb-3 p-2 rounded-lg bg-[#F7931A]/5 border border-[#F7931A]/20">
-                <p className="text-[10px] text-zinc-500 text-center">
-                  ⏱️ Results appear here after games complete
+              <div className="mb-2 sm:mb-3 p-1.5 sm:p-2 rounded-lg bg-[#F7931A]/5 border border-[#F7931A]/20">
+                <p className="text-[9px] sm:text-[10px] text-zinc-500 text-center">
                 </p>
               </div>
 
@@ -830,12 +829,12 @@ export default function Home() {
                   recentGames.map((game) => (
                     <div
                       key={game.id}
-                      className="flex items-center justify-between text-xs py-2.5 px-3 rounded-lg bg-zinc-900/60 border border-zinc-800"
+                      className="flex items-center justify-between text-xs py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg bg-zinc-900/60 border border-zinc-800"
                     >
-                      <span className="text-[#7F73FF] font-mono font-semibold truncate">
+                      <span className="text-[#7F73FF] font-mono font-semibold truncate text-[10px] sm:text-xs">
                         {game.winner}
                       </span>
-                      <span className="text-[#F7931A] font-bold text-sm whitespace-nowrap ml-2">
+                      <span className="text-[#F7931A] font-bold text-xs sm:text-sm whitespace-nowrap ml-2">
                         +{game.amount.toFixed(2)} STX
                       </span>
                     </div>
@@ -854,18 +853,18 @@ export default function Home() {
 
           {/* Right Panel: Command Deck */}
           <div className="w-full lg:w-80 flex flex-col gap-4 order-3">
-            <div className="backdrop-blur-md bg-black/40 border border-[#F7931A]/30 rounded-2xl p-6 shadow-xl">
-              <h2 className="text-xl font-bold text-white mb-2">
+            <div className="backdrop-blur-md bg-black/40 border border-[#F7931A]/30 rounded-2xl p-4 sm:p-6 shadow-xl">
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2">
                 Command Deck
               </h2>
-              <p className="text-zinc-400 text-xs mb-4">
+              <p className="text-zinc-400 text-xs mb-3 sm:mb-4">
                 ⚡ Create your own lobby and wait for a challenger
               </p>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {/* Amount Input */}
                 <div>
-                  <label className="block text-zinc-400 text-sm mb-2">
+                  <label className="block text-zinc-400 text-xs sm:text-sm mb-1.5 sm:mb-2">
                     Stack Amount (STX)
                   </label>
                   <input
@@ -873,35 +872,35 @@ export default function Home() {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Min. 1 STX"
-                    className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 focus:border-[#F7931A] focus:outline-none text-white placeholder-zinc-600 transition-colors"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-zinc-900 border border-zinc-800 focus:border-[#F7931A] focus:outline-none text-white text-sm sm:text-base placeholder-zinc-600 transition-colors"
                   />
                 </div>
 
                 {/* Coming Soon Features */}
-                <div className="p-3 rounded-xl bg-gradient-to-r from-zinc-900/50 to-zinc-800/50 border border-zinc-700/50">
-                  <p className="text-zinc-500 text-xs font-semibold mb-2 uppercase tracking-wider">
+                <div className="p-2.5 sm:p-3 rounded-xl bg-gradient-to-r from-zinc-900/50 to-zinc-800/50 border border-zinc-700/50">
+                  <p className="text-zinc-500 text-[10px] sm:text-xs font-semibold mb-1.5 sm:mb-2 uppercase tracking-wider">
                     Coming Soon
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 text-xs rounded-full bg-[#7F73FF]/10 text-[#7F73FF] border border-[#7F73FF]/20">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-[#7F73FF]/10 text-[#7F73FF] border border-[#7F73FF]/20">
                       Custom Multipliers
                     </span>
-                    <span className="px-3 py-1 text-xs rounded-full bg-[#F7931A]/10 text-[#F7931A] border border-[#F7931A]/20">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-[#F7931A]/10 text-[#F7931A] border border-[#F7931A]/20">
                       sBTC Support
                     </span>
-                    <span className="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       USDCx Support
                     </span>
                   </div>
                 </div>
 
                 {/* Payout Preview */}
-                <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                  <p className="text-zinc-400 text-xs mb-2">
+                <div className="p-3 sm:p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+                  <p className="text-zinc-400 text-[10px] sm:text-xs mb-1.5 sm:mb-2">
                     Potential Payout (2x Multiplier)
                   </p>
                   <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-zinc-500">Winner (90%)</span>
                       <span className="text-[#7F73FF] font-bold">
                         {amount
@@ -910,7 +909,7 @@ export default function Home() {
                         STX
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-zinc-500">Loser Rebate (8%)</span>
                       <span className="text-[#F7931A] font-semibold">
                         {amount
@@ -928,7 +927,7 @@ export default function Home() {
                   disabled={
                     !amount || parseFloat(amount) < 1 || gameState === "action"
                   }
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#7F73FF] to-[#F7931A] hover:from-[#6F63EF] hover:to-[#E7831A] disabled:from-zinc-800 disabled:to-zinc-800 disabled:cursor-not-allowed text-white font-bold text-lg transition-all duration-200 shadow-lg shadow-[#7F73FF]/20 hover:shadow-[#7F73FF]/40 disabled:shadow-none"
+                  className="w-full py-3 sm:py-4 rounded-xl bg-gradient-to-r from-[#7F73FF] to-[#F7931A] hover:from-[#6F63EF] hover:to-[#E7831A] disabled:from-zinc-800 disabled:to-zinc-800 disabled:cursor-not-allowed text-white font-bold text-sm sm:text-lg transition-all duration-200 shadow-lg shadow-[#7F73FF]/20 hover:shadow-[#7F73FF]/40 disabled:shadow-none"
                 >
                   {!isConnected
                     ? "Connect Wallet First"
